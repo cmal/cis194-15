@@ -140,14 +140,8 @@ class Num a => Differentiable a where
 -- >>> tail $ zipWith (*) [5,3,1] [0..]
 -- [3,2]
 
--- >>> deriv (P [5 3 1]) == P [3 2]
--- No instance for (Num (Integer -> Integer -> Integer))
---   arising from the literal ‘5’
---   (maybe you haven't applied a function to enough arguments?)
--- No instance for (Num (Integer -> Integer))
---   arising from the literal ‘3’
---   (maybe you haven't applied a function to enough arguments?)
-
+-- >>> deriv (P [5, 3, 1]) == P [3, 2]
+-- True
 instance (Integral a) => Differentiable (Poly a) where
     deriv (P ys)=  P $ tail $ zipWith (*) ys [0..]
 
