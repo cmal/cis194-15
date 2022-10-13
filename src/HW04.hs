@@ -110,7 +110,7 @@ instance Num a => Num (Poly a) where
     (+) = plus
     (*) = times
     negate      = times (P [-1])
-    fromInteger = undefined
+    fromInteger n = P [fromInteger n]
     -- No meaningful definitions exist
     abs    = undefined
     signum = undefined
