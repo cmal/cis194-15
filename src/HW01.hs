@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wall #-}
 module HW01 where
-import Distribution.Simple.Utils (xargs)
-import Data.ByteString.Builder (doubleLE)
+-- import Distribution.Simple.Utils (xargs)
+-- import Data.ByteString.Builder (doubleLE)
 
 -- Exercise 1 -----------------------------------------
 -- |

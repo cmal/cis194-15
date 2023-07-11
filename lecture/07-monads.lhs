@@ -38,7 +38,7 @@ to while performing actions.
 We’ve already learned about the `IO` monad, which sequences its actions
 quite naturally, performing them in order, and gives actions access to
 read and write anything, anywhere. We’ll also see the `Maybe` and `[]`
-(pronounced “list”) monads, which don’t give any access to reading and
+(pronounced “list”) monads, which don’t give any
 writing, but do interesting things with sequencing. And, for homework,
 you’ll use the `Rand` monad, which doesn’t much care about sequencing,
 but it does allow actions to read from and update a random generator.

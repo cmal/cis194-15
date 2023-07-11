@@ -16,45 +16,80 @@ import qualified Data.Vector as V
 
 
 -- Exercise 1 -----------------------------------------
-
+-- >>> liftM (+1) (Just 5) == Just 6
 liftM :: Monad m => (a -> b) -> m a -> m b
-liftM = undefined
+liftM f ma = do
+  a <- ma
+  return $ f a
+
+--   that takes in two indices and swaps the elements at those indices in
+-- some Vector. This function should use the safe indexing operation
+-- (!?) and not the unsafe one (!). If either of the indices are out of
+-- bounds (ie (!?) returns Nothing), then the result should be Nothing.
+-- You will probably find the (//) function useful.
+-- >>> swapV 0 2 (V.fromList [1, 2, 3]) == Just (V.fromList [3, 2, 1])
+-- >>> swapV 0 2 (V.fromList [1, 2]) == Nothing
 
 swapV :: Int -> Int -> Vector a -> Maybe (Vector a)
-swapV = undefined
+swapV j k v =
+  -- liftM2 (//) (Just v) $ mapM (\n -> sequence (n, v !? n)) [j,k] 
+  do
+  vj <- v !? j
+  vk <- v !? k
+  return $ v // [(j, vk), (k, vj)]
 
 -- Exercise 2 -----------------------------------------
-
+-- >>> mapM Just [1..10] == Just [1..10]
 mapM :: Monad m => (a -> m b) -> [a] -> m [b]
-mapM = undefined
+mapM f xs = sequence $ f <$> xs
 
+-- >>> getElts [1,3] (V.fromList [0..9]) == Just [1, 3]
 getElts :: [Int] -> Vector a -> Maybe [a]
-getElts = undefined
+getElts ns v = mapM (v!?) ns
 
 -- Exercise 3 -----------------------------------------
 
 type Rnd a = Rand StdGen a
 
+-- getRandom :: Random a => Rnd a
+-- getRandomR :: Random a => (a, a) -> Rnd a
+getRandIntLtN :: Random Int => Rnd Int
+getRandIntLtN n = liftM (\r -> floor (n * r)) getRandom
+
 randomElt :: Vector a -> Rnd (Maybe a)
-randomElt = undefined
+randomElt v = liftM (!?) (Just v) $ getRandIntLtN $ length v
 
 -- Exercise 4 -----------------------------------------
 
 randomVec :: Random a => Int -> Rnd (Vector a)
-randomVec = undefined
+randomVec n = sequence $ generate n getRandom
 
 randomVecR :: Random a => Int -> (a, a) -> Rnd (Vector a)
-randomVecR = undefined
+randomVecR n range = sequence $ generate n (getRandomR range)
 
 -- Exercise 5 -----------------------------------------
+compose :: [a -> a] -> a -> a
+compose fs v = foldl (flip (.)) id fs $ v
+getFs n = map (\i -> liftM (flip (swapV i) v) (getRandIntLtN (i + 1)) $ reverse [1..(n - 1)]
 
+-- >>> 1 + 1
+-- 
 shuffle :: Vector a -> Rnd (Vector a)
-shuffle = undefined
+shuffle v = compose (getFs (length v)) v
 
 -- Exercise 6 -----------------------------------------
 
 partitionAt :: Ord a => Vector a -> Int -> (Vector a, a, Vector a)
-partitionAt = undefined
+partitionAt v n = run v n empty pivot empty
+  where
+    pivot = v ! n
+    run v0 0 vl pivot vr = run v0 -1 vl pivot v4
+    run [] m vl pivot vr = (vl, pivot, vr)
+    run v0 m vl pivot vr = if a < pivot then run v1 k (snoc vl a) pivot vr else run v1 k vl pivot (snot vr a)
+      where
+        a = head v0
+        v1 = tail v0
+        k = m - 1
 
 -- Exercise 7 -----------------------------------------
 
@@ -65,12 +100,20 @@ quicksort (x:xs) = quicksort [ y | y <- xs, y < x ]
                    <> (x : quicksort [ y | y <- xs, y >= x ])
 
 qsort :: Ord a => Vector a -> Vector a
-qsort = undefined
+qsort empty = empty
+qsort v = qsort (do 
+  y <- tail v
+  guard $ y < x
+  return y) <> (cons (head v) qsort (do
+    y <- tail v
+    guard $ y >= x
+    return y))
 
 -- Exercise 8 -----------------------------------------
 
 qsortR :: Ord a => Vector a -> Rnd (Vector a)
-qsortR = undefined
+qsortR empty = empty
+qsortR v = undefined
 
 -- Exercise 9 -----------------------------------------
 
